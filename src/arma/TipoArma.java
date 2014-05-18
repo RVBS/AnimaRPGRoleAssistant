@@ -1,0 +1,5 @@
+package arma;
+
+public enum TipoArma {
+	ARMA_CORTA,HACHA,MAZA,ESPADA,MANDOBLE,ASTA,CUERDA,MIXTAS,DESARMADO
+}

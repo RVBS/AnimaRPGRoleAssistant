@@ -1,0 +1,5 @@
+package arma;
+
+public enum TipoAtaque {
+	FILO,CONTUNDENTE,PENETRANTE,CALOR,FRIO,ELECTRICIDAD,ENERGIA
+}
