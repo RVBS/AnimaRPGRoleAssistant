@@ -1,54 +1,30 @@
 package personaje;
-
-import dado.Dado100;
+import personaje.Resistencias.Resistencia;
 
 public class PNJ extends Personaje{
 	
-
-	
-	public PNJ(int pv_max, int f, int d, int a, int c, int i, int pod, int v, int per, String nombre){
-		iniciativa = 0;
+	public PNJ(int pv_max, int f, int d, int a, int c, int i, int pod, int v, int per, String nombre,
+			int h_a, int h_d, int h_e, int t, int ta){
+		//por defecto
+		tirarAutomatico = true;
+		
+		ini_Asalto = 0;
+		ha_Asalto = 0;
+		hd_Asalto = 0;
+		he_Asalto = 0;
+		
 		this.nombre = nombre;
 		
 		this.pv_max = pv_max;
 		this.pv = pv_max;
-		
-		_fue = f;
-		_des = d;
-		_agi = a;
-		_con = c;
-		_int = i;
-		_pod = pod;
-		_vol = v;
-		_per = per;
+		cs = new Caracteristicas(f,d,a,c,i,pod,v,per);
+		hc = new HabilidadesCombate(h_a,h_d,h_e,t,ta);
 	}
 	
-	
-	public int calcularResistencia(int res){
-		
-		int x = 0;
-		switch (res){
-			case RF:
-				x = rf;
-				break;
-			case RE: 
-				x = re;
-				break;
-			case RV: 
-				x = rv;
-				break;
-			case RM: 
-				x = rm;
-				break;
-			case RP: 
-				x = rp;
-				break;
-		}
-		
+	public int calcularResistencia(Resistencia r){
 		dado.tirarDado(modificador,false);
-		return x+dado.getResultado();
+		return rs.getResistencia(r)+dado.getResultado();
 	}
-
 
 	@Override
 	public boolean isPNJ() {

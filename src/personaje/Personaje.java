@@ -1,5 +1,9 @@
 package personaje;
 
+import java.util.ArrayList;
+
+import personaje.Caracteristicas.Caract;
+
 import arma.Arma;
 import arma.ArmaCorta;
 import arma.Especial;
@@ -8,75 +12,26 @@ import dado.Dado100;
 
 public abstract class Personaje {
 	
+	protected boolean tirarAutomatico;
 	//Dado por defecto
 	protected Dado100 dado = new Dado100(90,3,0);
 	
 	protected String nombre;
 	
-	protected int iniciativa; //turno + tirada de dados
-	
 	protected int pv_max;
 	protected int pv;
 	
-	protected int _fue;
-	protected int _des;
-	protected int _agi;
-	protected int _con;
-	protected int _int;
-	protected int _pod;
-	protected int _vol;
-	protected int _per;
+	/** Recalculadas en cada asalto **/
+	protected int ini_Asalto;
+	protected int ha_Asalto;
+	protected int hd_Asalto;
+	protected int he_Asalto;
 	
-	// TODO dependen del arma equipada
-	protected Arma armas = new ArmaCorta("Arma1",30,0,0,TipoAtaque.FILO,null,5,5,5);
-	protected int hatq;
-	protected int hdef;
-	protected int turno;
+	protected Caracteristicas cs;
+	protected Resistencias rs;
+	protected HabilidadesCombate hc;
+	
 	protected int modificador;
-	protected int _TA;
-	
-	// Resitencias
-	protected int rf;
-	protected int re;
-	protected int rv;
-	protected int rm;
-	protected int rp;
-	
-	
-	public static final int RF = 0;
-	public static final int RE = 1;
-	public static final int RV = 2;
-	public static final int RM = 3;
-	public static final int RP = 4;
-
-	protected int calcularBonificador(int i){
-		switch (i){
-			case 1: return -30;
-			case 2: return -20;
-			case 3: return -10;
-			case 4: return -5;
-			case 6: return 5;
-			case 7: return 5;
-			case 8: return 10;
-			case 9: return 10;
-			case 10: return 15;
-			case 11: return 20;
-			case 12: return 20;
-			case 13: return 25;
-			case 14: return 25;
-			case 15: return 30;
-			case 16: return 35;
-			case 17: return 35;
-			case 18: return 40;
-			case 19: return 40;
-			case 20: return 45;
-			default: return 0;
-		}
-	}
-	
-	public int getBonificadorFuerza(){
-		return calcularBonificador(_fue);
-	}
 	
 	public String getName(){
 		return nombre;
@@ -90,7 +45,6 @@ public abstract class Personaje {
 	}
 	
 	
-	
 	public String getNombre() {
 		return nombre;
 	}
@@ -98,101 +52,58 @@ public abstract class Personaje {
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-
-	public int getIniciativa() {
-		return iniciativa;
+	
+	public void setDado(int abierta, int pifia){
+		dado = new Dado100(abierta,pifia,0);
 	}
 
-	public void setIniciativa(int iniciativa) {
-		this.iniciativa = iniciativa;
+
+	/**
+	 * Devuelve la habilidad de ataque actual con el arma seleccionada actualmente
+	 * @return
+	 */
+	public int getHatqBase() {
+		return hc.getHatqBase();
 	}
 
-	public int get_fue() {
-		return _fue;
+	/**
+	 * Permite setear la habilidad de ataque base
+	 * @param hatq
+	 */
+	public void setHatqBase(int hatq) {
+		hc.setHatqBase(hatq);
 	}
 
-	public void set_fue(int _fue) {
-		this._fue = _fue;
+	/**
+	 * Permite obtener la habilidad de defensa actual con el arma equipada
+	 * @return
+	 */
+	public int getHdefBase() {
+		return hc.getHdefBase();
 	}
 
-	public int get_des() {
-		return _des;
-	}
-
-	public void set_des(int _des) {
-		this._des = _des;
-	}
-
-	public int get_agi() {
-		return _agi;
-	}
-
-	public void set_agi(int _agi) {
-		this._agi = _agi;
-	}
-
-	public int get_con() {
-		return _con;
-	}
-
-	public void set_con(int _con) {
-		this._con = _con;
-	}
-
-	public int get_int() {
-		return _int;
-	}
-
-	public void set_int(int _int) {
-		this._int = _int;
-	}
-
-	public int get_pod() {
-		return _pod;
-	}
-
-	public void set_pod(int _pod) {
-		this._pod = _pod;
-	}
-
-	public int get_vol() {
-		return _vol;
-	}
-
-	public void set_vol(int _vol) {
-		this._vol = _vol;
-	}
-
-	public int get_per() {
-		return _per;
-	}
-
-	public void set_per(int _per) {
-		this._per = _per;
-	}
-
-	public int getHatq() {
-		return hatq;
-	}
-
-	public void setHatq(int hatq) {
-		this.hatq = hatq;
-	}
-
-	public int getHdef() {
-		return hdef;
-	}
-
+	/**
+	 * Permite setear la habilidad de defensa base
+	 * @param hdef
+	 */
 	public void setHdef(int hdef) {
-		this.hdef = hdef;
+		hc.setHdefBase(hdef);
 	}
 
+	/**
+	 * Permite obtener la habilidad de turno actual con el arma equipada
+	 * @return
+	 */
 	public int getTurno() {
-		return turno;
+		return hc.getTurno();
 	}
 
+	/**
+	 * Permite setear la habilidad de turno base
+	 * @param turno
+	 */
 	public void setTurno(int turno) {
-		this.turno = turno;
+		hc.setTurnoBase(turno);
 	}
 
 	public int getModificador() {
@@ -201,67 +112,22 @@ public abstract class Personaje {
 
 	public void setModificador(int modificador) {
 		this.modificador = modificador;
+		hc.setModificador(modificador); //afecta tambien al combate
 	}
 
-	public int getRf() {
-		return rf;
-	}
-
-	public void setRf(int rf) {
-		this.rf = rf;
-	}
-
-	public int getRe() {
-		return re;
-	}
-
-	public void setRe(int re) {
-		this.re = re;
-	}
-
-	public int getRv() {
-		return rv;
-	}
-
-	public void setRv(int rv) {
-		this.rv = rv;
-	}
-
-	public int getRm() {
-		return rm;
-	}
-
-	public void setRm(int rm) {
-		this.rm = rm;
-	}
-
-	public int getRp() {
-		return rp;
-	}
-
-	public void setRp(int rp) {
-		this.rp = rp;
-	}
-	
 	public void setPVMAX(int pvMax){
 		this.pv_max = pvMax;
 		this.pv = pvMax;
 	}
 
-	public void setAtributosArma(int hatq, int hdef, int turn, int mod){
-		this.hatq = hatq;
-		this.hdef = hdef;
-		this.turno = turn;
-		this.modificador = mod;
+	public void addArma(Arma a){
+		hc.addArma(a);
 	}
 	
-	public void setResistencias(int rf, int re, int rv, int rm, int rp){
-		this.rf = rf;
-		this.re = re;
-		this.rv = rv;
-		this.rm = rm;
-		this.rp = rp;
+	public void setArma(Arma a){
+		hc.equiparArma(a);
 	}
+	
 	public boolean estaMuerto(){
 		return (pv <= 0);
 	}
@@ -277,44 +143,98 @@ public abstract class Personaje {
 		return critico;
 	}
 	
-	//TODO
-	public boolean cargarDatos(){
-		return false;
+	/**
+	 * Calcula la iniciativa y devuelve un arraylist con las tiradas
+	 * @return
+	 */
+	public ArrayList<Integer> calcularIniciativa(){
+		ArrayList<Integer> tiradas = dado.tirarDado(modificador, true);
+		ini_Asalto = hc.getTurno() + dado.getResultado();
+		return tiradas;
 	}
 	
-	public int calcularIniciativa(){
-		dado.tirarDado(modificador, true);
-		iniciativa = turno + dado.getResultado();
-		System.out.println(iniciativa);
-		return iniciativa;
+	/**
+	 * Calcula la habilidad de ataque y devuelve las tiradas
+	 * @return
+	 */
+	public ArrayList<Integer> calcularHabilidadAtaque(){
+		ArrayList<Integer> tiradas = dado.tirarDado(modificador, true);
+		ha_Asalto = hc.getHatqBase()+ dado.getResultado();
+		return tiradas;
 	}
 	
-	public int calcularHabilidadAtaque(){
-		dado.tirarDado(modificador, true);
-		return hatq + dado.getResultado();
+	public ArrayList<Integer> calcularHabilidadDefensa(){
+		ArrayList<Integer> tiradas = dado.tirarDado(modificador, true);
+		hd_Asalto = hc.getHdefBase() + dado.getResultado();
+		return tiradas;
 	}
 	
-	public int calcularHabilidadDefensa(){
-		dado.tirarDado(modificador, true);
-		return hdef + dado.getResultado();
+	public ArrayList<Integer> calcularHabilidadEsquiva(){
+		ArrayList<Integer> tiradas = dado.tirarDado(modificador, true);
+		he_Asalto = hc.getHesqBase() + dado.getResultado();
+		return tiradas;
 	}
 	
 	public int getTA(){
-		return _TA;
+		return hc.get_TA();
 	}
 	
 	public void setTA(int ta){
-		_TA = ta;
+		hc.set_TA(ta);
 	}
 	
 	public abstract boolean isPNJ();
 	
-	public int getDañoArma(){
-		return armas.getDañoArma();
+	public int getDañoArmaEquipada(){
+		return hc.getArmaEquipada().getDañoArma();
+	}
+
+	public int getIni_Asalto() {
+		return ini_Asalto;
+	}
+
+	public void setIni_Asalto(int ini_Asalto) {
+		this.ini_Asalto = ini_Asalto;
+	}
+
+	public int getHa_Asalto() {
+		return ha_Asalto;
+	}
+
+	public void setHa_Asalto(int ha_Asalto) {
+		this.ha_Asalto = ha_Asalto;
+	}
+
+	public int getHd_Asalto() {
+		return hd_Asalto;
+	}
+
+	public void setHd_Asalto(int hd_Asalto) {
+		this.hd_Asalto = hd_Asalto;
+	}
+
+	public int getHe_Asalto() {
+		return he_Asalto;
 	}
 	
-	public void setDañoArma(int d){
-		armas.setDañoArma(d);
+	public int getTurnoBase(){
+		return hc.getTurnoBase();
+	}
+
+	public void setHe_Asalto(int he_Asalto) {
+		this.he_Asalto = he_Asalto;
+	}
+
+	public boolean isTirarAutomatico() {
+		return tirarAutomatico;
+	}
+
+	public void setTirarAutomatico(boolean tirarAutomatico) {
+		this.tirarAutomatico = tirarAutomatico;
+	}
+	
+	public int getBonificadorArma(){
+		return cs.getBonificadorCaracteristica(Caract.FUE);
 	}
 
 }

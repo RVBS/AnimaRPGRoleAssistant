@@ -19,7 +19,12 @@ public abstract class Arma {
 		return daño;
 	}
 	
-	public void setDañoArma(int i){
-		daño = i;
+	public int getTurnoArma(){
+		return turno;
 	}
+	
+	public String getNombreArma(){
+		return nombre;
+	}
+	
 }
