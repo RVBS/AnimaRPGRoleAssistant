@@ -1,3 +1,4 @@
+package controlador;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -153,6 +154,10 @@ public class Controlador {
 		}
 		inf +="\n";
 		return inf;
+	}
+	
+	public ArrayList<Personaje> getPersonajes(){
+		return personajes;
 	}
 	
 	public static void main(String arg[]){

@@ -103,5 +103,9 @@ public class HabilidadesCombate {
 		return turno + armaEquipada.getTurnoArma(); //atributos arma seleccionada
 	}
 	
+	public int getIndexArmaEquipada(){
+		return armasDisponibles.indexOf(armaEquipada);
+	}
+	
 	
 }

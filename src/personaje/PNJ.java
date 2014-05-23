@@ -14,6 +14,7 @@ public class PNJ extends Personaje{
 		he_Asalto = 0;
 		
 		this.nombre = nombre;
+		this.tipo = nombre;
 		
 		this.pv_max = pv_max;
 		this.pv = pv_max;

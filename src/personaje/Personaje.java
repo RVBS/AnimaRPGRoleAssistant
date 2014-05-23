@@ -17,6 +17,7 @@ public abstract class Personaje {
 	protected Dado100 dado = new Dado100(90,3,0);
 	
 	protected String nombre;
+	protected String tipo;
 	
 	protected int pv_max;
 	protected int pv;
@@ -33,8 +34,8 @@ public abstract class Personaje {
 	
 	protected int modificador;
 	
-	public String getName(){
-		return nombre;
+	public String getTipo(){
+		return tipo;
 	}
 	
 	public int getPV_MAX(){
@@ -235,6 +236,32 @@ public abstract class Personaje {
 	
 	public int getBonificadorArma(){
 		return cs.getBonificadorCaracteristica(Caract.FUE);
+	}
+	
+	public String[] getListaArmas(){
+		Arma[] armas = getArmas();
+		String[] nombresArmas = new String[armas.length];
+		for (int i = 0; i < armas.length; i++){
+			nombresArmas[i] = armas[i].getNombreArma();
+		}
+		return nombresArmas;
+	}
+	
+	public Arma[] getArmas(){
+		Object[] ob = hc.armasDisponibles.toArray();
+		Arma[] armas = new Arma[ob.length];
+		for (int i = 0; i < ob.length; i++)
+			armas[i] = (Arma)ob[i];
+		return armas;
+		
+	}
+	
+	public Arma getArmaEquipada(){
+		return hc.getArmaEquipada();
+	}
+	
+	public int getIndexArmaEquipada(){
+		return hc.getIndexArmaEquipada();
 	}
 
 }
