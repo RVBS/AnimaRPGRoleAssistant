@@ -23,6 +23,9 @@ public class Controlador {
 	private static final ArrayList<Personaje> listaTodosPersonajes = new ArrayList<>();
 	private static final ArrayList<Arma> listaTodasArmas = new ArrayList<>();
 	
+	private ArrayList<Personaje> pjDEF;
+	private Personaje pjATQ;
+	
 	//lista de personajes que actuan
 	private ArrayList<Personaje> personajes;
 	// Parte encargada de calcular los resultados de los combates y sus reglas
@@ -32,6 +35,7 @@ public class Controlador {
 	
 	public Controlador(){
 		personajes = new ArrayList<>();
+		pjDEF = new ArrayList<>();
 	}
 	
 	public void nuevoCombate(Personaje atacante,ArrayList<Personaje> defensores){
@@ -206,6 +210,30 @@ public class Controlador {
 		def = new ArrayList<>(); def.add(df);
 		c.nuevoCombate(at, def);
 		System.out.println(c.getInfo());
+	}
+
+	public Personaje getPjATQ() {
+		return pjATQ;
+	}
+
+	public void setPjATQ(Personaje pjATQ) {
+		this.pjATQ = pjATQ;
+	}
+
+	public ArrayList<Personaje> getPjDEF() {
+		return pjDEF;
+	}
+
+	public void setPjDEF(ArrayList<Personaje> pjDEF) {
+		this.pjDEF = pjDEF;
+	}
+
+	public static ArrayList<Arma> getListatodasarmas() {
+		return listaTodasArmas;
+	}
+
+	public static ArrayList<Personaje> getListatodospersonajes() {
+		return listaTodosPersonajes;
 	}
 	
 }

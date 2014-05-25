@@ -3,12 +3,16 @@ package interfaz;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -30,33 +34,39 @@ import controlador.Controlador;
 import personaje.PNJ;
 import personaje.Personaje;
 
-public class PanelIniciativa extends JPanel {
-	
+public class PanelIniciativa extends PanelPersonajes{
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel panelPersonajes;
-	private JTextArea informacion;
-	private HashMap<Personaje,JPanel> panelPersonaje;
-	/** para poder obtener los datos de los personajes **/
-	private Controlador c;
+	private ArrayList<JToggleButton> botonesAtaque;
+	private ArrayList<JToggleButton> botonesDefensa;
+	private PanelCombate panelCombate;
 	
 	
-	public PanelIniciativa(Controlador c){
+	public PanelIniciativa(Controlador c,PanelCombate panelCombate){
 		this.c = c;
+		this.panelCombate = panelCombate;
 		this.setPreferredSize(new Dimension(800,400));
 		this.setLayout(new BorderLayout());
 		
+		botonesAtaque = new ArrayList<>();
+		botonesDefensa = new ArrayList<>();
 		panelPersonajes = getPanelPersonajes();
 		
-		this.add(panelPersonajes, BorderLayout.CENTER);
+		JScrollPane js = new JScrollPane(panelPersonajes);
+		js.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		js.setWheelScrollingEnabled(true);
+		this.add(js, BorderLayout.CENTER);
 		this.add(getPanelInfo(), BorderLayout.SOUTH);
 	}
 	
 	private JPanel getPanelPersonajes(){
+		//ActionListenerBotonAtq a = new ActionListenerBotonAtq();
 		JPanel panel = new JPanel();
 		PanelIniPersonaje panelPj;
+		panel.setPreferredSize(new Dimension(600,c.getPersonajes().size()*32));
 		
 		panel.add(new PanelIniPersonaje(null)); //cabecera
 		
@@ -66,18 +76,104 @@ public class PanelIniciativa extends JPanel {
 			panelPj.setPreferredSize(new Dimension(600,24));
 			panelPersonaje.put(p,panelPj);
 			panel.add(panelPj);
+			panelPj.getBotonAtaque().addActionListener(new ActionListenerBotonAtq());
+			panelPj.getBotonDefensa().addActionListener(new ActionListenerBotonDef());
+			botonesAtaque.add(panelPj.getBotonAtaque());
+			botonesDefensa.add(panelPj.getBotonDefensa());
 		}
 		return panel;
 	}
 	
-	private JScrollPane getPanelInfo(){
-		JScrollPane p = new JScrollPane();
-		informacion = new JTextArea();
-		informacion.setEditable(false);
-		p.add(informacion);
+	protected JPanel getPanelBotones() {
+		JPanel p = new JPanel();
+		p.setLayout(new GridLayout(0,2));
+		
+		JButton b1 = new JButton();
+		b1.setIcon(new ImageIcon("src/icons/calcular.png"));
+		b1.setPreferredSize(new Dimension(64,64));
+		//b1.addActionListener();
+		b1.setToolTipText("Calcular y ordenar por iniciativa. Tira los dados si está marcado");
+		p.add(b1);
+		
+		b1 = new JButton();
+		b1.setIcon(new ImageIcon("src/icons/combatir.png"));
+		b1.setToolTipText("Prepara un combate para los personajes seleccionados");
+		b1.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				Personaje pj;
+				ArrayList<Personaje> defensores = new ArrayList<>();
+				PanelIniPersonaje panelPj;
+				int ad = 0; //1 ataca, -1 defiende
+				// Indicar atacante y defensores
+				for (int i = 0; i < c.getPersonajes().size();i++){
+					ad = 0; //1 ataca, -1 defiende
+					pj = c.getPersonajes().get(i);
+					panelPj = (PanelIniPersonaje) panelPersonaje.get(pj);
+					if (panelPj.getBotonAtaque().isSelected()) ad++;
+					if (panelPj.getBotonDefensa().isSelected()) ad--;
+					
+					switch (ad){
+						case -1: defensores.add(pj); pj.setEsDefensor(true); break;
+						case 1: c.setPjATQ(pj); pj.setEsAtacante(true); break;
+						default: 
+					}
+				}
+				
+				c.setPjDEF(defensores);
+				
+				if (c.getPjATQ() != null && c.getPjDEF().size() > 0){
+					panelCombate.actualizar();
+				}
+			}
+			
+		});
+		p.add(b1);
+		
 		return p;
 	}
 	
+	/**
+	 * Clase para implementar un action listener que solo permita que
+	 * uno de los botones de ataque esten seleccionados al mismo tiempo
+	 * @author Brawl
+	 *
+	 */
+	private class ActionListenerBotonAtq implements ActionListener{
+
+		public void actionPerformed(ActionEvent arg0) {
+			JToggleButton tb = (JToggleButton) arg0.getSource();
+			for (int i = 0; i < botonesAtaque.size(); i++){					
+				
+				if (botonesAtaque.get(i) != tb){
+					botonesAtaque.get(i).setSelected(false);
+				}
+				else
+					botonesDefensa.get(i).setSelected(false);
+			}
+		}
+		
+	}
+	
+	/**
+	 * Atq y Def no pueden estar seleccionados al mismo tiempo
+	 * @author Brawl
+	 *
+	 */
+	private class ActionListenerBotonDef  implements ActionListener{
+
+		public void actionPerformed(ActionEvent arg0) {
+			JToggleButton tb = (JToggleButton) arg0.getSource();
+			for (int i = 0; i < botonesDefensa.size(); i++){					
+				
+				if (botonesDefensa.get(i) == tb){
+					botonesAtaque.get(i).setSelected(false);
+				}
+			}
+		}
+		
+	}
 	
 	/**
 	 * Clase para tener una fila con los datos de los personajes para la iniciativa
@@ -193,16 +289,12 @@ public class PanelIniciativa extends JPanel {
 			
 		}
 		
-		private Color getColorPV(int pv, int pv_max){
-			if (pv < 0.25*pv_max)
-				return Color.red;
-			if (pv < 0.5*pv_max)
-				return Color.yellow;
-			return Color.green;
-		}
-		
 		public JToggleButton getBotonAtaque(){
 			return atq;
+		}
+		
+		public JToggleButton getBotonDefensa(){
+			return def;
 		}
 		
 		/**
@@ -213,15 +305,15 @@ public class PanelIniciativa extends JPanel {
 			JPanel p = new JPanel();
 			p.setLayout(new GridLayout(0,3));
 			
-			ButtonGroup group = new ButtonGroup();
+			//ButtonGroup group = new ButtonGroup();
 			
 			atq = new JToggleButton();
 			atq.setIcon(new ImageIcon("src/icons/atacar.png"));
-			group.add(atq);
+			//group.add(atq);
 			
 			def = new JToggleButton();
 			def.setIcon(new ImageIcon("src/icons/defender.png"));
-			group.add(def);
+			//group.add(def);
 			
 			tirarAuto = new JCheckBox();
 			tirarAuto.setSelected(ini);
@@ -233,40 +325,8 @@ public class PanelIniciativa extends JPanel {
 			return p;
 			}
 	}
-	
-	public static void main(String args[]){
-		Personaje at;
-		Personaje df;
-		Controlador c = new Controlador();
-		//String nombre, int daño, int turno, int fue_requerida, 
-		//TipoAtaque critico,Especial[] especial, int entereza, int rotura, int presencia)
-		Arma garrote = new ArmaCorta("garrote",40,-10,5,TipoAtaque.CONTUNDENTE,null,5,5,5);
-		Arma daga = new ArmaCorta("daga",30,20,5,TipoAtaque.FILO,null,5,5,5);
-		
-		Personaje pj1 = new PNJ(128, 5, 6, 3, 4, 5, 6, 7, 3, "Goblin",60,40,10,50,1);
-		pj1.addArma(garrote);
-		pj1.setArma(garrote);
-		
-		Personaje pj2 = new PNJ(74, 5, 6, 3, 4, 5, 6, 7, 3, "Goblin Ladron",20,20,45,80,0);
-		pj2.addArma(daga);
-		pj2.setArma(daga);
-		
-		Personaje pj3 = new PNJ(245, 5, 6, 3, 4, 5, 6, 7, 3, "Goblin Armado",80,80,0,40,2);
-		pj3.addArma(daga);
-		pj3.addArma(garrote);
-		pj3.setArma(garrote);
-		
-		c.addPersonaje(pj1);
-		c.addPersonaje(pj2);
-		c.addPersonaje(pj3);
-		
-		JFrame f = new JFrame();
-		f.setSize(new Dimension(100,100));
-		f.setVisible(true);
-		JPanel p = new JPanel();
-		p.add(new PanelIniciativa(c));
-		f.setContentPane(p);
-	}
-	
+
+
+
 	
 }

@@ -12,6 +12,9 @@ import dado.Dado100;
 
 public abstract class Personaje {
 	
+	protected boolean esAtacante;
+	protected boolean esDefensor;
+
 	protected boolean tirarAutomatico;
 	//Dado por defecto
 	protected Dado100 dado = new Dado100(90,3,0);
@@ -262,6 +265,22 @@ public abstract class Personaje {
 	
 	public int getIndexArmaEquipada(){
 		return hc.getIndexArmaEquipada();
+	}
+	
+	public boolean isEsAtacante() {
+		return esAtacante;
+	}
+
+	public void setEsAtacante(boolean esAtacante) {
+		this.esAtacante = esAtacante;
+	}
+
+	public boolean isEsDefensor() {
+		return esDefensor;
+	}
+
+	public void setEsDefensor(boolean esDefensor) {
+		this.esDefensor = esDefensor;
 	}
 
 }
