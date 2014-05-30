@@ -6,6 +6,12 @@ import personaje.Personaje;
 
 public class AsaltoCombate {
 
+	/**
+	 * TODO
+	 * - Hay que saber cual es el tipo del ataque (en base al critico de su arma) para saber
+	 *  que TA hay que aplicarle
+	 */
+	
 	public static final int ABSORCION_NAT = 20;
 	// Para situaciones en las que un mismo atacante afecte a varios personajes
 	private Personaje atacante;

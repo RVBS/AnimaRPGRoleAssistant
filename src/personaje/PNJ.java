@@ -1,10 +1,12 @@
 package personaje;
+import arma.Arma;
 import personaje.Resistencias.Resistencia;
 
 public class PNJ extends Personaje{
 	
-	public PNJ(int pv_max, int f, int d, int a, int c, int i, int pod, int v, int per, String nombre,
-			int h_a, int h_d, int h_e, int t, int ta){
+	public PNJ(String tipo, String nombre, int turno, int pv_max, int ha, int hd, int he, 
+			int agi, int des, int con, int fue,int per, int in, int vol, int pod,
+			int ta_fil, int ta_con, int ta_pen, int ta_cal, int ta_fri, int ta_ele, int ta_ene){
 		//por defecto
 		tirarAutomatico = true;
 		
@@ -18,8 +20,8 @@ public class PNJ extends Personaje{
 		
 		this.pv_max = pv_max;
 		this.pv = pv_max;
-		cs = new Caracteristicas(f,d,a,c,i,pod,v,per);
-		hc = new HabilidadesCombate(h_a,h_d,h_e,t,ta);
+		cs = new Caracteristicas(fue,des,agi,con,in,pod,vol,per);
+		hc = new HabilidadesCombate(ha,hd,he,turno,0);
 	}
 	
 	public int calcularResistencia(Resistencia r){
@@ -31,6 +33,25 @@ public class PNJ extends Personaje{
 	public boolean isPNJ() {
 		return true;
 	}
+
+	@Override
+	public Personaje clonar(String nombre) {
+		Personaje clon;
+		clon = new PNJ(this.tipo,this.tipo,this.getTurnoBase(), this.pv_max, this.getHatqBase(),
+				this.getHdefBase(), this.getHEsqBase(),cs._agi,cs._des,cs._con,cs._fue,cs._per,cs._int,cs._vol,
+				cs._pod,0,0,0,0,0,0,0);
+		for (Arma a : this.getArmas()){
+			clon.addArma(a);
+		}
+		
+		clon.setArma(this.getArmaEquipada());
+		clon.setNombre(nombre);
+		
+		return clon;
+			
+	}
+	
+	
 }
 
 

@@ -85,6 +85,10 @@ public abstract class Personaje {
 	public int getHdefBase() {
 		return hc.getHdefBase();
 	}
+	
+	public int getHEsqBase(){
+		return hc.getHesqBase();
+	}
 
 	/**
 	 * Permite setear la habilidad de defensa base
@@ -282,5 +286,8 @@ public abstract class Personaje {
 	public void setEsDefensor(boolean esDefensor) {
 		this.esDefensor = esDefensor;
 	}
+	
+	
+	public abstract Personaje clonar(String nombre);
 
 }

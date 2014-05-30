@@ -31,6 +31,8 @@ public class PanelCombate extends PanelPersonajes{
 	private HashMap<Personaje,JPanel> panelPersonaje;
 	/** para poder obtener los datos de los personajes **/
 	private Controlador c;
+	private JSpinner result;
+	private JSpinner damage;
 	
 	
 	public PanelCombate(Controlador c){
@@ -73,26 +75,54 @@ public class PanelCombate extends PanelPersonajes{
 		return panel;
 	}
 	
+	protected JPanel getPanelResultado(){
+		JPanel p = new JPanel();
+		p.setPreferredSize(new Dimension(150,100));
+		p.setLayout(new GridLayout(4,0));
+		
+		p.add(new JLabel("Resultado"));
+		
+		result = new JSpinner();
+		result.setModel(new SpinnerNumberModel(0,-999,999,5));
+		p.add(result);
+		
+		p.add(new JLabel("Daño efectivo"));
+		
+		damage = new JSpinner();
+		damage.setModel(new SpinnerNumberModel(0,-999,999,5));
+		p.add(damage);
+		
+		return p;
+	}
+	
 	@Override
 	protected JPanel getPanelBotones() {
-		JPanel p = new JPanel();
-		p.setLayout(new GridLayout(0,2));
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		
+		JPanel panel2 = getPanelResultado();
+		
+		JPanel panel1 = new JPanel();
+		panel1.setLayout(new GridLayout(2,0));
 		
 		JButton b1 = new JButton();
 		b1.setIcon(new ImageIcon("src/icons/calcular.png"));
 		b1.setToolTipText("Calcula el resultado del combate. Tira los dados si está marcado");
-		b1.setPreferredSize(new Dimension(64,64));
+		b1.setPreferredSize(new Dimension(50,50));
 		//b1.addActionListener();
-		p.add(b1);
+		panel1.add(b1);
 		
 		b1 = new JButton();
 		b1.setIcon(new ImageIcon("src/icons/aplicar_combate.png"));
 		b1.setToolTipText("Aplica los resultados del combate a la salud de los personajes involucrados");
-		b1.setPreferredSize(new Dimension(64,64));
+		b1.setPreferredSize(new Dimension(50,50));
 		//b1.addActionListener();
-		p.add(b1);
+		panel1.add(b1);
 		
-		return p;
+		panel.add(panel2,BorderLayout.CENTER);
+		panel.add(panel1,BorderLayout.EAST);
+		
+		return panel;
 	}
 	
 	/**

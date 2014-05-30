@@ -17,10 +17,12 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
@@ -43,10 +45,12 @@ public class PanelIniciativa extends PanelPersonajes{
 	private ArrayList<JToggleButton> botonesAtaque;
 	private ArrayList<JToggleButton> botonesDefensa;
 	private PanelCombate panelCombate;
+	private JTabbedPane tb;
 	
 	
-	public PanelIniciativa(Controlador c,PanelCombate panelCombate){
+	public PanelIniciativa(Controlador c,PanelCombate panelCombate,JTabbedPane tb){
 		this.c = c;
+		this.tb = tb;
 		this.panelCombate = panelCombate;
 		this.setPreferredSize(new Dimension(800,400));
 		this.setLayout(new BorderLayout());
@@ -84,55 +88,144 @@ public class PanelIniciativa extends PanelPersonajes{
 		return panel;
 	}
 	
-	protected JPanel getPanelBotones() {
+	/**
+	 * Devuelve un panel que permite escribir anotaciones en un text area
+	 * @return
+	 */
+	protected JPanel getPanelAnotaciones(){
 		JPanel p = new JPanel();
-		p.setLayout(new GridLayout(0,2));
+		p.setPreferredSize(new Dimension(150,100));
+		p.setLayout(new BorderLayout());
+		
+		p.add(new JLabel("Anotaciones"),BorderLayout.NORTH);
+		
+		JTextArea txArea = new JTextArea();
+		txArea.setLineWrap(true);
+		p.add(txArea, BorderLayout.CENTER);
+		
+		return p;
+	}
+	
+	@Override
+	protected JPanel getPanelBotones() {
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		
+		JPanel panel2 = getPanelAnotaciones();
+		
+		JPanel panel1 = new JPanel();
+		panel1.setLayout(new GridLayout(2,0));
 		
 		JButton b1 = new JButton();
 		b1.setIcon(new ImageIcon("src/icons/calcular.png"));
-		b1.setPreferredSize(new Dimension(64,64));
-		//b1.addActionListener();
-		b1.setToolTipText("Calcular y ordenar por iniciativa. Tira los dados si está marcado");
-		p.add(b1);
+		b1.setToolTipText("Ordena los personajes para el asalto. Calcula la iniciativa si está marcado.");
+		b1.setPreferredSize(new Dimension(50,50));
+		b1.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				actualizarDatos();
+				c.calcularIniciativas();
+				informacion.setText(c.getInfo());
+				for (Personaje p: c.getPersonajes()){
+					((PanelIniPersonaje)panelPersonaje.get(p)).ini.setValue(p.getIni_Asalto());
+				}
+				actualizar();
+			}
+		});
+		panel1.add(b1);
 		
 		b1 = new JButton();
 		b1.setIcon(new ImageIcon("src/icons/combatir.png"));
 		b1.setToolTipText("Prepara un combate para los personajes seleccionados");
+		b1.setPreferredSize(new Dimension(50,50));
 		b1.addActionListener(new ActionListener(){
-
-			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				Personaje pj;
-				ArrayList<Personaje> defensores = new ArrayList<>();
-				PanelIniPersonaje panelPj;
-				int ad = 0; //1 ataca, -1 defiende
-				// Indicar atacante y defensores
-				for (int i = 0; i < c.getPersonajes().size();i++){
-					ad = 0; //1 ataca, -1 defiende
-					pj = c.getPersonajes().get(i);
-					panelPj = (PanelIniPersonaje) panelPersonaje.get(pj);
-					if (panelPj.getBotonAtaque().isSelected()) ad++;
-					if (panelPj.getBotonDefensa().isSelected()) ad--;
-					
-					switch (ad){
-						case -1: defensores.add(pj); pj.setEsDefensor(true); break;
-						case 1: c.setPjATQ(pj); pj.setEsAtacante(true); break;
-						default: 
-					}
-				}
-				
-				c.setPjDEF(defensores);
-				
-				if (c.getPjATQ() != null && c.getPjDEF().size() > 0){
-					panelCombate.actualizar();
-				}
+				prepararCombate();
 			}
-			
 		});
-		p.add(b1);
+		panel1.add(b1);
 		
-		return p;
+		panel.add(panel2,BorderLayout.CENTER);
+		panel.add(panel1,BorderLayout.EAST);
+		
+		return panel;
+	
 	}
+	
+	/**
+	 * Actualiza los datos de los personajes con lo introducido a través de la interfaz
+	 */
+	private void actualizarDatos(){
+		
+	}
+	
+	/**
+	 * Actualiza el panel, creando los subpaneles de los nuevos personajes si no estaban ya
+	 */
+	public void actualizar(){
+		
+		PanelIniPersonaje panelPj;
+		
+		for (int i = 0; i < panelPersonajes.getComponentCount(); i++)
+			panelPersonajes.remove(i);
+		
+		panelPersonajes.add(new PanelIniPersonaje(null)); //cabecera
+		for (Personaje p: c.getPersonajes()){
+			if (panelPersonaje.containsKey(p)){
+				panelPersonajes.add(panelPersonaje.get(p));
+			}
+			else{
+				panelPj = new PanelIniPersonaje(p);
+				panelPj.setPreferredSize(new Dimension(600,24));
+				panelPersonaje.put(p,panelPj);
+				panelPersonajes.add(panelPj);
+				panelPj.getBotonAtaque().addActionListener(new ActionListenerBotonAtq());
+				panelPj.getBotonDefensa().addActionListener(new ActionListenerBotonDef());
+				botonesAtaque.add(panelPj.getBotonAtaque());
+				botonesDefensa.add(panelPj.getBotonDefensa());
+			}
+		}
+		
+		panelPersonajes.validate();
+		
+	}
+	
+	private void prepararCombate(){
+		Personaje pj;
+		ArrayList<Personaje> defensores = new ArrayList<>();
+		PanelIniPersonaje panelPj;
+		int ad = 0; //1 ataca, -1 defiende
+		// Indicar atacante y defensores
+		for (int i = 0; i < c.getPersonajes().size();i++){
+			ad = 0; //1 ataca, -1 defiende
+			pj = c.getPersonajes().get(i);
+			panelPj = (PanelIniPersonaje) panelPersonaje.get(pj);
+			if (panelPj.getBotonAtaque().isSelected()) ad++;
+			if (panelPj.getBotonDefensa().isSelected()) ad--;
+			
+			switch (ad){
+				case -1: defensores.add(pj); pj.setEsDefensor(true); break;
+				case 1: c.setPjATQ(pj); pj.setEsAtacante(true); break;
+				default: 
+			}
+		}
+		
+		c.setPjDEF(defensores);
+		
+		if (c.getPjATQ() != null && c.getPjDEF().size() > 0){
+			panelCombate.actualizar();
+			tb.setEnabledAt(1,true);
+			tb.setSelectedIndex(1);
+		}
+		else{
+			JOptionPane.showMessageDialog(null, "Selecciona un atacante y al menos un defensor",
+					"Combatir", JOptionPane.INFORMATION_MESSAGE);
+			tb.setEnabledAt(1,false);
+		}
+		
+		
+	
+	}
+	
 	
 	/**
 	 * Clase para implementar un action listener que solo permita que
@@ -296,6 +389,7 @@ public class PanelIniciativa extends PanelPersonajes{
 		public JToggleButton getBotonDefensa(){
 			return def;
 		}
+	
 		
 		/**
 		 * Obtenemos los tres iconos para el combate la iniciativa

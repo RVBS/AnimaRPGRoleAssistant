@@ -5,6 +5,12 @@ import java.util.ArrayList;
 import arma.Arma;
 
 public class HabilidadesCombate {
+	
+	/**
+	 * TODO
+	 * - Añadir los distintos tipos de TA
+	 */
+	
 	protected Arma armaEquipada;
 	protected ArrayList<Arma> armasDisponibles;
 	
