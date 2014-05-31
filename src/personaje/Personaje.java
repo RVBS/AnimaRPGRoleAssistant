@@ -12,6 +12,8 @@ import dado.Dado100;
 
 public abstract class Personaje {
 	
+	protected boolean yaActuado;
+	
 	protected boolean esAtacante;
 	protected boolean esDefensor;
 
@@ -156,8 +158,27 @@ public abstract class Personaje {
 	 * @return
 	 */
 	public ArrayList<Integer> calcularIniciativa(){
+		int pifia;
+		int value;
 		ArrayList<Integer> tiradas = dado.tirarDado(modificador, true);
-		ini_Asalto = hc.getTurno() + dado.getResultado();
+		// Igual que en el manual tabla 52 - pifia en turno -> pagina 97
+		if (tiradas.get(0) <= dado.valorPifia()){
+			// Ha sido pifia
+			pifia = tiradas.get(0);
+			tiradas.clear();
+			tiradas.add(pifia);
+			switch (pifia){
+				case 1: value = -125; break;
+				case 2: value = -100; break;
+				default: value = -75; break; //pifias a partir del 3
+			}
+			tiradas.add(value);
+			ini_Asalto = hc.getTurno() + value;
+			
+		}
+		else {
+			ini_Asalto = hc.getTurno() + dado.getResultado();
+		}
 		return tiradas;
 	}
 	
@@ -287,6 +308,13 @@ public abstract class Personaje {
 		this.esDefensor = esDefensor;
 	}
 	
+	public boolean gastadoTurno(){
+		return yaActuado;
+	}
+	
+	public void setGastadoTurno(boolean b){
+		yaActuado = b;
+	}
 	
 	public abstract Personaje clonar(String nombre);
 

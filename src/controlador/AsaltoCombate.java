@@ -18,6 +18,8 @@ public class AsaltoCombate {
 	private ArrayList<Personaje> defensores; //todo generalizar a esquiva
 	private String info;
 	private boolean critico;
+	private int res;
+	private int dam;
 	
 	public AsaltoCombate(Personaje atacante, ArrayList<Personaje> defensores){
 		this.atacante = atacante;
@@ -66,6 +68,8 @@ public class AsaltoCombate {
 			resultado = resultado - (ABSORCION_NAT + (10*d.getTA()));
 			info += "Despues de absorber, con TA "+d.getTA()+
 					", el resultado efectivo es "+resultado+"\n";
+			
+			res = resultado;
 				
 			if (resultado >= 10){
 				porcentaje = (float)resultado/100;
@@ -77,11 +81,14 @@ public class AsaltoCombate {
 				if(d.aplicarDaño(d_efectivo)){
 					info += "El ataque contra "+d.getNombre()+" ha sido crítico \n";
 				}
+				dam = d_efectivo;
 			}
 			else if (resultado < 0){
 				info += "Oportunidad de contra para "+d.getNombre()+"\n";
 			}
 		}
+		
+
 			
 		return info;
 	}
@@ -92,6 +99,14 @@ public class AsaltoCombate {
 	 */
 	public String getInformacion(){
 		return info;
+	}
+	
+	public int getResultadoUltimoCombate(){
+		return res;
+	}
+	
+	public int getDamageUltimoCombate(){
+		return dam;
 	}
 }
 	

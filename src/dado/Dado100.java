@@ -114,6 +114,10 @@ public class Dado100 extends Dado{
 		return numTiradasPifia;
 	}
 	
+	public int valorPifia(){
+		return tiradaPifia;
+	}
+	
 	public static final void main(String args[]){
 		Dado100 d = new Dado100(90,5,0);
 		for (int i = 0; i < 10; i++){

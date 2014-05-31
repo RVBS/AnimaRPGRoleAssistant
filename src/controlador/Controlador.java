@@ -42,8 +42,6 @@ public class Controlador {
 	}
 	
 	public void nuevoCombate(Personaje atacante,ArrayList<Personaje> defensores){
-		//setHabilidadesCombateAsalto -> para los que no tiran dados
-		//setModificadores -> por si hay modificaciones añadidas
 		combate = new AsaltoCombate(atacante,defensores);
 		info = combate.calcularCombate();
 	}
@@ -245,53 +243,17 @@ public class Controlador {
 		return personajes;
 	}
 	
-	//public static void main(String arg[]){
-		//Personaje at;
-		//Personaje df;
-		//Controlador c = new Controlador();
-		//String nombre, int daño, int turno, int fue_requerida, 
-		//TipoAtaque critico,Especial[] especial, int entereza, int rotura, int presencia)
-		//Arma garrote = new ArmaCorta("garrote",40,-10,5,TipoAtaque.CONTUNDENTE,null,5,5,5);
-		//Arma daga = new ArmaCorta("daga",30,20,5,TipoAtaque.FILO,null,5,5,5);
-		
-		/*Personaje pj1 = new PNJ(128, 5, 6, 3, 4, 5, 6, 7, 3, "Goblin",60,40,10,50,1);
-		pj1.addArma(garrote);
-		pj1.setArma(garrote);
-		
-		Personaje pj2 = new PNJ(74, 5, 6, 3, 4, 5, 6, 7, 3, "Goblin Ladron",20,20,45,80,0);
-		pj2.addArma(daga);
-		pj2.setArma(daga);
-		
-		Personaje pj3 = new PNJ(245, 5, 6, 3, 4, 5, 6, 7, 3, "Goblin Armado",80,80,0,40,2);
-		pj3.addArma(daga);
-		pj3.addArma(garrote);
-		pj3.setArma(garrote);
-		
-		c.addPersonaje(pj1);
-		c.addPersonaje(pj2);
-		c.addPersonaje(pj3);
-		
-		System.out.println("----------PRIMER ASALTO-------------");
-		c.calcularIniciativas();
-		System.out.println(c.getInfo());
-		System.out.println("ORDEN: "+c.getOrdenPersonajes());
-		at = c.getPersonajeOrdenadoIniciativa(0);
-		df = c.getPersonajeOrdenadoIniciativa(1);
-		ArrayList<Personaje> def = new ArrayList<>(); def.add(df);
-		c.nuevoCombate(at, def);
-		System.out.println(c.getInfo());
-		System.out.println("----------SEGUNDO ASALTO-------------");
-		System.out.println(pj3.getNombre()+" cambia de arma a "+daga.getNombreArma());
-		pj3.setArma(daga);
-		c.calcularIniciativas();
-		System.out.println(c.getInfo());
-		System.out.println("ORDEN: "+c.getOrdenPersonajes());
-		at = c.getPersonajeOrdenadoIniciativa(0);
-		df = c.getPersonajeOrdenadoIniciativa(1);
-		def = new ArrayList<>(); def.add(df);
-		c.nuevoCombate(at, def);
-		System.out.println(c.getInfo());*/
-	//}
+	public int getResultadoUltimoCombate(){
+		if (combate != null)
+			return combate.getResultadoUltimoCombate();
+		else return -999;
+	}
+	
+	public int getDamageUltimoCombate(){
+		if (combate != null)
+			return combate.getDamageUltimoCombate();
+		else return -999;
+	}
 
 	public Personaje getPjATQ() {
 		return pjATQ;
