@@ -194,14 +194,20 @@ public abstract class Personaje {
 	
 	public ArrayList<Integer> calcularHabilidadDefensa(){
 		ArrayList<Integer> tiradas = dado.tirarDado(modificador, true);
-		hd_Asalto = hc.getHdefBase() + dado.getResultado();
+		hd_Asalto = hc.getHdefBase() + dado.getResultado() + hc.getPenalizacionDefensasAdicionales();
+		hc.num_defensas++;
 		return tiradas;
 	}
 	
 	public ArrayList<Integer> calcularHabilidadEsquiva(){
 		ArrayList<Integer> tiradas = dado.tirarDado(modificador, true);
-		he_Asalto = hc.getHesqBase() + dado.getResultado();
+		he_Asalto = hc.getHesqBase() + dado.getResultado() + hc.getPenalizacionDefensasAdicionales();;
+		hc.num_defensas++;
 		return tiradas;
+	}
+	
+	public int getPenalizacionDefensa(){
+		return hc.getPenalizacionDefensasAdicionales();
 	}
 	
 	public int getTA(){

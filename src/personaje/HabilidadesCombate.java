@@ -20,6 +20,8 @@ public class HabilidadesCombate {
 	protected int hesq;
 	protected int turno; //Base, modificada por el arma
 	protected int modificador;
+	protected int num_defensas;
+	protected int num_ataques;
 	protected int _TA;
 	
 	public HabilidadesCombate(int h_a, int h_d, int h_e, int turno, int ta){
@@ -29,6 +31,8 @@ public class HabilidadesCombate {
 		hesq = h_e;
 		this.turno = turno;
 		_TA = ta;
+		num_defensas = 1;
+		num_ataques = 1;
 	}
 	
 	public void addArma(Arma a){
@@ -106,7 +110,21 @@ public class HabilidadesCombate {
 	
 
 	public int getTurno(){
+		num_defensas = 1;
 		return turno + armaEquipada.getTurnoArma(); //atributos arma seleccionada
+	}
+	
+	public int getPenalizacionDefensasAdicionales(){
+		int pen = 0;
+		switch(num_defensas){
+			case 0: pen = 0; break;
+			case 1: pen = 0; break;
+			case 2: pen = -30; break;
+			case 3: pen = -50; break;
+			case 4: pen = -70; break;
+			default: pen = -90; //5+
+		}
+		return pen;
 	}
 	
 	public int getIndexArmaEquipada(){
