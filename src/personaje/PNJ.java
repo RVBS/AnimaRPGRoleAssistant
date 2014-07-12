@@ -21,7 +21,8 @@ public class PNJ extends Personaje{
 		this.pv_max = pv_max;
 		this.pv = pv_max;
 		cs = new Caracteristicas(fue,des,agi,con,in,pod,vol,per);
-		hc = new HabilidadesCombate(ha,hd,he,turno,0);
+		hc = new HabilidadesCombate(ha,hd,he,turno,
+				new Armadura(ta_fil,ta_con,ta_pen,ta_cal,ta_fri,ta_ele,ta_ene));
 	}
 	
 	public int calcularResistencia(Resistencia r){

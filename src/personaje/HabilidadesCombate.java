@@ -3,13 +3,10 @@ package personaje;
 import java.util.ArrayList;
 
 import arma.Arma;
+import arma.TipoArma;
+import arma.TipoAtaque;
 
 public class HabilidadesCombate {
-	
-	/**
-	 * TODO
-	 * - Añadir los distintos tipos de TA
-	 */
 	
 	protected Arma armaEquipada;
 	protected ArrayList<Arma> armasDisponibles;
@@ -22,15 +19,15 @@ public class HabilidadesCombate {
 	protected int modificador;
 	protected int num_defensas;
 	protected int num_ataques;
-	protected int _TA;
+	protected Armadura armadura;
 	
-	public HabilidadesCombate(int h_a, int h_d, int h_e, int turno, int ta){
+	public HabilidadesCombate(int h_a, int h_d, int h_e, int turno, Armadura a){
 		armasDisponibles = new ArrayList<>(); //TODO combate desarmado
 		hatq = h_a;
 		hdef = h_d;
 		hesq = h_e;
 		this.turno = turno;
-		_TA = ta;
+		armadura = a;
 		num_defensas = 1;
 		num_ataques = 1;
 	}
@@ -91,12 +88,12 @@ public class HabilidadesCombate {
 		this.modificador = modificador;
 	}
 
-	public int get_TA() {
-		return _TA;
+	public int get_TA(TipoAtaque t) {
+		return armadura.getProteccion(t);
 	}
 
-	public void set_TA(int _TA) {
-		this._TA = _TA;
+	public void set_TA(TipoAtaque t,int ta) {
+		armadura.setProteccion(t, ta);
 	}
 	
 	

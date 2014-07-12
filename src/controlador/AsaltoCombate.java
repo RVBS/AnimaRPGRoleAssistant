@@ -1,6 +1,8 @@
 package controlador;
 import java.util.ArrayList;
 
+import arma.TipoAtaque;
+
 import personaje.Personaje;
 
 
@@ -30,6 +32,7 @@ public class AsaltoCombate {
 	public String calcularCombate()
 	{
 		String info_general;
+		TipoAtaque tipoDeAtaque= atacante.getArmaEquipada().getTipoAtaque(true);
 		int contra;
 		int acum;
 		info = "";
@@ -48,6 +51,7 @@ public class AsaltoCombate {
 			info += "Atacante "+atacante.getNombre()+
 					" tira. Tiradas: "+atacante.calcularHabilidadAtaque()+
 					" HA base: "+atacante.getHatqBase()+
+					" Tipo Ataque: "+tipoDeAtaque+
 					" Res: "+atacante.getHa_Asalto()+"\n";
 		}
 		hab_ataque = atacante.getHa_Asalto();
@@ -69,8 +73,8 @@ public class AsaltoCombate {
 			resultado = hab_ataque - hab_defensa.get(i);
 			info += "Resultado del combate "+resultado+"\n";
 			// Calculo de la absorcion
-			resultado = resultado - (ABSORCION_NAT + (10*d.getTA()));
-			info += "Despues de absorber, con TA "+d.getTA()+
+			resultado = resultado - (ABSORCION_NAT + (10*d.getTA(tipoDeAtaque)));
+			info += "Despues de absorber, con TA "+d.getTA(tipoDeAtaque)+ " contra "+tipoDeAtaque+
 					", el resultado efectivo es "+resultado+"\n";
 			
 			res = resultado;

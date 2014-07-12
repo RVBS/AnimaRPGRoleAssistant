@@ -27,4 +27,15 @@ public abstract class Arma {
 		return nombre;
 	}
 	
+	/**
+	 * Con el booleano indicamos si usamos el arma con su ataque principal o con su funcion
+	 * secundaria
+	 * @param ataquePrimario
+	 * @return
+	 */
+	public TipoAtaque getTipoAtaque(boolean ataquePrimario){
+		if (ataquePrimario)
+			return critico1;
+		return critico2;
+	}
 }

@@ -210,12 +210,12 @@ public abstract class Personaje {
 		return hc.getPenalizacionDefensasAdicionales();
 	}
 	
-	public int getTA(){
-		return hc.get_TA();
+	public int getTA(TipoAtaque t){
+		return hc.get_TA(t);
 	}
 	
-	public void setTA(int ta){
-		hc.set_TA(ta);
+	public void setTA(TipoAtaque t,int ta){
+		hc.set_TA(t,ta);
 	}
 	
 	public abstract boolean isPNJ();

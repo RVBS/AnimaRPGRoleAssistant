@@ -7,6 +7,7 @@ public class Desarmado extends Arma {
 		this.daño = d;
 		this.tipoArma = TipoArma.DESARMADO;
 		this.turno = t;
+		this.critico1 = TipoAtaque.CON;
 		
 	}
 
